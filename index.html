@@ -1,0 +1,227 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Voicebot Landing Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        header {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 1.5rem 0;
+            text-align: center;
+        }
+
+        section {
+            background-color: #ffffff;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 40px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #343a40;
+        }
+
+        p {
+            color: #6c757d;
+        }
+
+        button {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #1d2124;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1em 0;
+            background-color: #343a40;
+            color: #ffffff;
+        }
+
+        /* Chatbox styles */
+        .chatbox {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .chat {
+            padding: 20px;
+            overflow-y: scroll;
+            max-height: 300px;
+        }
+
+        .user-message, .bot-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .user-message {
+            background-color: #e1f5fe;
+            text-align: right;
+        }
+
+        .bot-message {
+            background-color: #e0e0e0;
+        }
+
+        .input-container {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        input {
+            width: 80%;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button.chat-button {
+            width: 18%;
+            padding: 8px;
+            background-color: #2196F3;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Your Voicebot Companion</h1>
+    </header>
+
+    <section class="container">
+        <img src="/Capture.PNG" alt="Voicebot Character Image" style="mix-blend-mode:darken; height: 100px;">
+        <h2>About Us</h2>
+        <p>
+            At Your Organization, we care deeply about your mental well-being. Introducing Your Voicebot Companion, an AI designed to provide support through empathetic conversations.
+        </p>
+
+        <h2>How It Works</h2>
+        <ol>
+            <li>Start Talking: Click the "Talk Now" button to initiate a conversation.</li>
+            <li>Safe and Confidential: Your conversations are private and confidential.</li>
+            <li>Empathetic Responses: Our AI responds with empathy to your emotions.</li>
+        </ol>
+
+        <h2>Get Started</h2>
+        <p>
+            Ready to start your conversation with Your Voicebot Companion? Click the "Talk Now" button below.
+        </p>
+        <button class="btn btn-primary chat-button" onclick="toggleChatbox()">Talk Now</button>
+
+        <!-- Chatbox Container -->
+        <div id="chatboxContainer" style="display: none;">
+            <div class="chatbox" id="chatbox">
+                <div class="chat" id="chat">
+                    <div class="bot-message">Hello! I'm Lui, your AI companion. How can I help you today?</div>
+                </div>
+                <div class="input-container">
+                    <input type="text" id="userInput" placeholder="Type or speak your message...">
+                    <button class="chat-button" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <footer>
+        &copy; 2023  | Contact: support@voicebot.com
+    </footer>
+
+
+    <script>
+        function toggleChatbox() {
+            var chatboxContainer = document.getElementById("chatboxContainer");
+            chatboxContainer.style.display = chatboxContainer.style.display === "none" ? "block" : "none";
+        }
+
+        function sendMessage() {
+            var userInput = document.getElementById("userInput").value;
+            if (userInput !== "") {
+                appendMessage("user-message", userInput);
+
+                // Simulate a bot response after a brief delay
+                setTimeout(function () {
+                    var botResponse = "I'm sorry, I'm still learning. I'll be able to provide better assistance in the future!";
+                    appendMessage("bot-message", botResponse);
+                    speak(botResponse); // Speak the bot's response
+                }, 500);
+
+                document.getElementById("userInput").value = "";
+            }
+        }
+
+        function appendMessage(className, message) {
+            var chat = document.getElementById("chat");
+            var messageDiv = document.createElement("div");
+            messageDiv.className = className;
+            messageDiv.innerHTML = message;
+            chat.appendChild(messageDiv);
+            chat.scrollTop = chat.scrollHeight; // Scroll to the bottom of the chat
+        }
+
+        function speak(message) {
+            var speech = new SpeechSynthesisUtterance();
+            speech.text = message;
+            window.speechSynthesis.speak(speech);
+        }
+    </script>
+
+    <script>
+        var recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+
+        recognition.onresult = function (event) {
+            var userInput = event.results[0][0].transcript;
+            document.getElementById("userInput").value = userInput;
+        }
+
+        recognition.onerror = function (event) {
+            console.error('Speech recognition error:', event.error);
+        }
+
+        function startSpeechRecognition() {
+            recognition.start();
+        }
+    </script>
+</body>
+</html>
